@@ -145,3 +145,4 @@ Desktop.ini
 ######################
 spring.factories
 backend/kapital-media-network/web3jSpringBootStarter/target
+/.idea/
