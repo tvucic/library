@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/library_db?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: library
+    password: library
+
+    jpa:
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.MySQL8Dialect
+  data:
+    rest:
+      base-path: /api

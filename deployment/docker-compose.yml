@@ -1,0 +1,33 @@
+version: '3.5'
+
+services:
+  library_db:
+    container_name: mysql_library
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'library_db'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'library'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'library'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'library'
+    ports:
+      # <Port exposed> : <MySQL Port running inside container>
+      - '3306:3306'
+      # Where our data will be persisted
+    volumes:
+      - library_db:/var/lib/mysql
+    networks:
+      - mysql_library
+
+networks:
+  mysql_library:
+    name: mysql_library
+    driver: bridge
+
+# Names our volume
+volumes:
+  library_db:
+    name: library_db
