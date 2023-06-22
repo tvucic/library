@@ -31,7 +31,7 @@ public class BookServiceImpl implements BookService
 
     public List<BookResponse> getAllBooks(int page, int size)
     {
-        LOGGER.info("Get all topics was called!");
+        LOGGER.info("Get all books was called!");
 
         Pageable pageableRequest = PageRequest.of(page, size);
 
@@ -40,7 +40,6 @@ public class BookServiceImpl implements BookService
         List<Book> books = bookPage.getContent();
 
         ModelMapper modelMapper = new ModelMapper();
-
         return modelMapper.map(books, new TypeToken<List<BookResponse>>(){}.getType());
     }
 }
