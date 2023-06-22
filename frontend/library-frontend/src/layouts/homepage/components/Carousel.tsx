@@ -1,7 +1,38 @@
-import React from "react";
+import React, {useEffect, useState } from "react";
 import { ReturnBook } from "./ReturnBook";
+import BookModel from "../../../models/BookModel"
 
 export const Carousel = () => {
+
+    const [books, setBooks] = useState<BookModel[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [httpError, setHttpError] = useState(null);
+
+    useEffect(() => {
+
+        const fetchBooks = async () => {
+
+            const baseUrl: string = "http://localhost:8080/v1/api/books";
+
+            const response = await fetch(baseUrl);
+
+
+            if (!response.ok) {
+                throw new Error('Something went wrong!');
+            }
+
+            const responseJson = await response.json();
+            console.log(responseJson)
+
+        }
+
+        fetchBooks().catch((error: any) => {
+            setIsLoading(false);
+            setHttpError(error.message);
+        })
+    }, [])
+
+
     return (
         <div className='container mt-5' style={{ height: 550 }}>
             <div className='homepage-carousel-title'>
