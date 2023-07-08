@@ -8,4 +8,6 @@ import java.util.List;
 public interface BookService
 {
     List<BookResponse> getAllBooks(int page, int size);
+
+    long getAllBooksAvailableNumber();
 }

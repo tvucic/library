@@ -42,4 +42,11 @@ public class BookServiceImpl implements BookService
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(books, new TypeToken<List<BookResponse>>(){}.getType());
     }
+
+    @Override
+    public long getAllBooksAvailableNumber()
+    {
+        return bookRepository.count();
+    }
+
 }

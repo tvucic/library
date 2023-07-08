@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import BookModel from '../../models/BookModel';
 import { SearchBook } from './components/SearchBook';
 import { SpinnerLoading } from '../utils/SpinerLoading';
+import React from 'react';
+import { Pagination } from '../utils/Pagination';
 
 export const SearchBooksPage = () => {
 
@@ -12,13 +14,13 @@ export const SearchBooksPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [booksPerPage] = useState(5);
     const [totalAmountOfBooks, setTotalAmountOfBooks] = useState(0);
-    const [totalPages, setTotalPages] = useState(0);
+    const [totalPages, setTotalPages] = useState(5);
 
     useEffect(() => {
         const fetchBooks = async () => {
             const baseUrl: string = "http://localhost:8080/v1/api/books";
 
-            let url: string = `${baseUrl}?page=0&size=5`;
+            let url: string = `${baseUrl}?page=${currentPage - 1}&size=${booksPerPage}`;
 
             const response = await fetch(url);
 
@@ -27,6 +29,10 @@ export const SearchBooksPage = () => {
             }
 
             const responseJson = await response.json();
+
+            //setTotalAmountOfBooks(responseJson.page.totalElements);
+            //setTotalPages(responseJson.page.totalPages);
+
 
             const loadedBooks: BookModel[] = [];
 
@@ -51,7 +57,7 @@ export const SearchBooksPage = () => {
             setHttpError(error.message);
         })
         window.scrollTo(0, 0);
-    }, []);
+    }, [currentPage]);
 
     if (isLoading) {
         return (
@@ -66,6 +72,14 @@ export const SearchBooksPage = () => {
             </div>
         )
     }
+
+
+    const indexOfLastBook: number = currentPage * booksPerPage;
+    const indexOfFirstBook: number = indexOfLastBook - booksPerPage;
+    let lastItem = booksPerPage * currentPage <= totalAmountOfBooks ? booksPerPage * currentPage : totalAmountOfBooks;
+
+    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
     return (
         <div>
             <div className='container'>
@@ -121,6 +135,9 @@ export const SearchBooksPage = () => {
                     {books.map(book => (
                         <SearchBook book={book} key={book.id} />
                     ))}
+                    {
+                        totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
+                    }
                 </div>
             </div>
         </div>

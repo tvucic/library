@@ -35,4 +35,19 @@ public class BookController
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/count")
+    public ResponseEntity<Object> getAllBooksAvailableNumber()
+    {
+        try
+        {
+            long allBooksAvailableNumber = bookService.getAllBooksAvailableNumber();
+
+            return new ResponseEntity<>(allBooksAvailableNumber, HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }
