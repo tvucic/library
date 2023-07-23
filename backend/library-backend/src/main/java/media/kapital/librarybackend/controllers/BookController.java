@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/api/books")
-@CrossOrigin
 public class BookController
 {
     private final BookService bookService;
@@ -29,6 +28,21 @@ public class BookController
             List<BookResponse> bookResponses = bookService.getAllBooks(page, size);
 
             return new ResponseEntity<>(bookResponses, HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/{bookId}")
+    public ResponseEntity<Object> getBookById(@PathVariable String bookId)
+    {
+        try
+        {
+            BookResponse bookResponse = bookService.getBookById(bookId);
+
+            return new ResponseEntity<>(bookResponse, HttpStatus.OK);
         }
         catch (Exception e)
         {

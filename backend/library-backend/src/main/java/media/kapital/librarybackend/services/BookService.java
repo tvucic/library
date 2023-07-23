@@ -10,4 +10,6 @@ public interface BookService
     List<BookResponse> getAllBooks(int page, int size);
 
     long getAllBooksAvailableNumber();
+
+    BookResponse getBookById(String bookId);
 }

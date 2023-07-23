@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class BookResponse
 {
+    private long id;
+
     private String title;
 
     private String author;

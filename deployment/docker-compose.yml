@@ -20,14 +20,26 @@ services:
     volumes:
       - library_db:/var/lib/mysql
     networks:
-      - mysql_library
+      - library_network
+  nexus:
+    image: "sonatype/nexus3:3.58.1"
+    container_name: nexus
+    ports:
+      - "7654:8081"
+      - "7655:7655"
+    volumes:
+      - nexus:/nexus-data
+    networks:
+      - library_network
 
 networks:
-  mysql_library:
-    name: mysql_library
+  library_network:
+    name: library_network
     driver: bridge
 
 # Names our volume
 volumes:
   library_db:
     name: library_db
+  nexus:
+    name: nexus

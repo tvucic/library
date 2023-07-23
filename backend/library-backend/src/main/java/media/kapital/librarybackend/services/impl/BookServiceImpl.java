@@ -14,8 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookServiceImpl implements BookService
@@ -41,6 +41,27 @@ public class BookServiceImpl implements BookService
 
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(books, new TypeToken<List<BookResponse>>(){}.getType());
+    }
+
+    public BookResponse getBookById(String bookId)
+    {
+        LOGGER.info("Get getBookById() was called " + bookId);
+
+        Optional<Book> book = bookRepository.findById(Long.parseLong(bookId));
+
+        BookResponse bookResponse = null;
+
+        if (book.isPresent())
+        {
+            ModelMapper modelMapper = new ModelMapper();
+            bookResponse =  modelMapper.map(book, new TypeToken<BookResponse>(){}.getType());
+        }
+        else
+        {
+            LOGGER.info("No book found with id " + bookId);
+        }
+
+        return bookResponse;
     }
 
     @Override
