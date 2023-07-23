@@ -1,6 +1,5 @@
 package media.kapital.librarybackend.controllers;
 
-import media.kapital.librarybackend.responses.BookResponse;
 import media.kapital.librarybackend.responses.ReviewResponse;
 import media.kapital.librarybackend.services.ReviewService;
 import org.springframework.http.HttpStatus;
@@ -37,7 +36,7 @@ public class ReviewController
     }
 
     @GetMapping("/{reviewId}")
-    public ResponseEntity<Object> getBookById(@PathVariable String reviewId)
+    public ResponseEntity<Object> getReviewById(@PathVariable String reviewId)
     {
         try
         {
