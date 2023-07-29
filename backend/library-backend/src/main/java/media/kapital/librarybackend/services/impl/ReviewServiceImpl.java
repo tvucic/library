@@ -2,6 +2,7 @@ package media.kapital.librarybackend.services.impl;
 
 import media.kapital.librarybackend.entity.Book;
 import media.kapital.librarybackend.entity.Review;
+import media.kapital.librarybackend.exceptions.ReviewException;
 import media.kapital.librarybackend.repositories.ReviewRepository;
 import media.kapital.librarybackend.responses.BookResponse;
 import media.kapital.librarybackend.responses.ReviewResponse;
@@ -48,7 +49,7 @@ public class ReviewServiceImpl implements ReviewService
     }
 
     @Override
-    public ReviewResponse getReviewById(String reviewId)
+    public ReviewResponse getReviewById(String reviewId) throws ReviewException
     {
         LOGGER.info("Get getReviewById() was called " + reviewId);
 
@@ -64,8 +65,22 @@ public class ReviewServiceImpl implements ReviewService
         else
         {
             LOGGER.info("No review found with id " + reviewId);
+            throw  new ReviewException("No review found with id " + reviewId);
         }
 
         return reviewResponse;
+    }
+
+    public List<ReviewResponse> getReviewsByBookId(String bookId)
+    {
+        LOGGER.info("getReviewsByBookId() ");
+
+        List<Review> reviewsByBookId = reviewRepository.findReviewsByBookId(bookId);
+
+
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(reviewsByBookId, new TypeToken<List<ReviewResponse>>(){}.getType());
+
+
     }
 }

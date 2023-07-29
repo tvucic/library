@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class BookResponse
 {
-    private long id;
+    private Long id;
 
     private String title;
 

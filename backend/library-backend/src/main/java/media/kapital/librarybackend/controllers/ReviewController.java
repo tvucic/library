@@ -50,4 +50,21 @@ public class ReviewController
         }
     }
 
+    @GetMapping("/search/{reviewId}")
+    public ResponseEntity<Object> getReviewsByBookId(@PathVariable String reviewId)
+    {
+        try
+        {
+
+            List<ReviewResponse> reviewResponses = reviewService.getReviewsByBookId(reviewId);
+
+            return new ResponseEntity<>(reviewResponses, HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 }

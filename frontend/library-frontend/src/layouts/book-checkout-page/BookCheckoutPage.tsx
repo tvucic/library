@@ -1,31 +1,40 @@
 import React, { useEffect, useState } from "react";
 import BookModel from "../../models/BookModel";
+import ReviewModel from "../../models/ReviewModel";
 import { SpinnerLoading } from "../utils/SpinerLoading";
 import { StarsReview } from "../utils/StarsReview";
 import { CheckoutAndReviewBox } from "./CheckoutAndReviewBox";
+import { LatestReviews } from "./LatestReviews";
 
 const BookCheckoutPage = () => {
 
-  const [book, setBook] = useState<BookModel>();
-  const [isLoading, setIsLoading] = useState(true);
-  const [httpError, setHttpError] = useState(null);
+const [book, setBook] = useState<BookModel>();
+const [isLoading, setIsLoading] = useState(true);
+const [httpError, setHttpError] = useState(null);
 
-  const bookId = (window.location.pathname).split('/')[2];
+// Review State
+const [reviews, setReviews] = useState<ReviewModel[]>([])
+const [totalStars, setTotalStars] = useState(0);
+const [isLoadingReview, setIsLoadingReview] = useState(true);
+
+const [isReviewLeft, setIsReviewLeft] = useState(false);
+const [isLoadingUserReview, setIsLoadingUserReview] = useState(true);
+
+const bookId = (window.location.pathname).split('/')[2];
 
   useEffect(() => {
     const fetchBook = async () => {                                          //       0            1       2
-        const baseUrl: string = `http://localhost:8080/api/books/${bookId}`; // localhost:3000/checkout/<bookId>
+        const baseUrl: string = `http://localhost:8080/v1/api/books/${bookId}`; // localhost:3000/checkout/<bookId>
 
         const response = await fetch(baseUrl);
+
         
-
-
-        if (!response.ok) {
+        if (!response.ok) 
+        {
             throw new Error('Something went wrong!');
         }
 
         const responseJson = await response.json();
-        console.log(responseJson);
 
         const loadedBook: BookModel = {
             id: responseJson.id,
@@ -37,7 +46,6 @@ const BookCheckoutPage = () => {
             category: responseJson.category,
             img: responseJson.img,
         };
-
         setBook(loadedBook);
         setIsLoading(false);
     };
@@ -47,7 +55,54 @@ const BookCheckoutPage = () => {
     })
 }, []);
 
-if (isLoading) {
+useEffect(() => {
+    const fetchBookReviews = async () => {
+        const reviewUrl: string = `http://localhost:8080/v1/api/reviews/search/${bookId}`;
+
+        const responseReviews = await fetch(reviewUrl);
+
+        if (!responseReviews.ok) {
+            throw new Error('Something went wrong!');
+        }
+
+        const responseJsonReviews = await responseReviews.json();
+
+        console.log("responseJsonReviews ", responseJsonReviews)
+
+        const loadedReviews: ReviewModel[] = [];
+
+        let weightedStarReviews: number = 0;
+
+        for (const key in responseJsonReviews) {
+            console.log("key ", key)
+            loadedReviews.push({
+                id: responseJsonReviews[key].id,
+                userEmail: responseJsonReviews[key].userEmail,
+                date: responseJsonReviews[key].date,
+                rating: responseJsonReviews[key].rating,
+                book_id: responseJsonReviews[key].bookId,
+                reviewDescription: responseJsonReviews[key].reviewDescription,
+            });
+            weightedStarReviews = weightedStarReviews + responseJsonReviews.rating;
+        }
+
+        if (loadedReviews) {
+            const round = (Math.round((weightedStarReviews / loadedReviews.length) * 2) / 2).toFixed(1);
+            setTotalStars(Number(round));
+        }
+
+        setReviews(loadedReviews);
+        setIsLoadingReview(false);
+    };
+
+    fetchBookReviews().catch((error: any) => {
+        setIsLoadingReview(false);
+        setHttpError(error.message);
+    })
+}, []);
+
+
+if (isLoading || isLoadingReview) {
   return (
       <SpinnerLoading />
   )
@@ -60,7 +115,7 @@ if (httpError) {
       </div>
   )
 }
-
+console.log(reviews)
   return (
     <div>
     <div className='container d-none d-lg-block'>
@@ -78,12 +133,13 @@ if (httpError) {
                     <h2>{book?.title}</h2>
                     <h5 className='text-primary'>{book?.author}</h5>
                     <p className='lead'>{book?.description}</p>
-                    <StarsReview rating={2.5} size={32}/>
+                    <StarsReview rating={totalStars} size={32}/>
                 </div>
             </div>
             <CheckoutAndReviewBox book={book} mobile={false} />
         </div>
         <hr />
+        <LatestReviews reviews={reviews} bookId={book?.id} mobile={false} />
     </div>
     <div className='container d-lg-none mt-5'>
         <div className='d-flex justify-content-center align-items-center'>
@@ -99,14 +155,15 @@ if (httpError) {
                 <h2>{book?.title}</h2>
                 <h5 className='text-primary'>{book?.author}</h5>
                 <p className='lead'>{book?.description}</p>
-                <StarsReview rating={2.5} size={32}/>
+                <StarsReview rating={totalStars} size={32}/>
             </div>
         </div>
         <CheckoutAndReviewBox book={book} mobile={true} />
         <hr />
+        <LatestReviews reviews={reviews} bookId={book?.id} mobile={true} />
     </div>
 </div>
-  )
+  );
 }
 
 export default BookCheckoutPage
