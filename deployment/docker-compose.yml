@@ -24,6 +24,7 @@ services:
   nexus:
     image: "sonatype/nexus3:3.58.1"
     container_name: nexus
+    restart: always
     ports:
       - "7654:8081"
       - "7655:7655"
@@ -31,6 +32,26 @@ services:
       - nexus:/nexus-data
     networks:
       - library_network
+  keycloak:
+    restart: always
+    image: jboss/keycloak:16.1.1
+    container_name: library_keycloak
+    volumes:
+      - library_keycloak:/opt/keycloak
+    environment:
+      KEYCLOAK_USER: 'keycloak'
+      KEYCLOAK_PASSWORD: 'keycloak'
+      DB_VENDOR: 'MYSQL'
+      DB_ADDR: 'library_db'
+      DB_DATABASE: 'library_db'
+      DB_USER: 'library'
+      DB_PASSWORD: 'library'
+    ports:
+      - '9080:8080'
+    networks:
+      - library_network
+    depends_on:
+      - library_db
 
 networks:
   library_network:
@@ -43,3 +64,5 @@ volumes:
     name: library_db
   nexus:
     name: nexus
+  library_keycloak:
+    name: library_keycloak
