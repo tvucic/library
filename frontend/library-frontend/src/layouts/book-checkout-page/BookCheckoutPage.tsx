@@ -24,7 +24,7 @@ const bookId = (window.location.pathname).split('/')[2];
 
   useEffect(() => {
     const fetchBook = async () => {                                          //       0            1       2
-        const baseUrl: string = `http://localhost:8080/v1/api/books/${bookId}`; // localhost:3000/checkout/<bookId>
+        const baseUrl: string = `http://localhost:9091/v1/api/books/${bookId}`; // localhost:3000/checkout/<bookId>
 
         const response = await fetch(baseUrl);
 

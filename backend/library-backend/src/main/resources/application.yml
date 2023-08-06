@@ -1,12 +1,24 @@
+server:
+  port: 9091
 spring:
   application:
-    name: library_backend
+    name: library_app
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/library_db?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: library
     password: library
-
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9080/auth/realms/library
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+jwt:
+  auth:
+    converter:
+      resource-id: library_app
+      principal-attribute: preferred_username
     jpa:
       properties:
         hibernate:
@@ -14,14 +26,3 @@ spring:
   data:
     rest:
       base-path: /api
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:9080/auth/realms/library
-          jwk-set-uri: ${spring.session.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
-jwt:
-  auth:
-    converter:
-      resource-id: library_backend
-      principal-attribute: preferred_username

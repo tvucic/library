@@ -58,7 +58,6 @@ networks:
     name: library_network
     driver: bridge
 
-# Names our volume
 volumes:
   library_db:
     name: library_db
