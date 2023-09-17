@@ -57,7 +57,7 @@ const bookId = (window.location.pathname).split('/')[2];
 
 useEffect(() => {
     const fetchBookReviews = async () => {
-        const reviewUrl: string = `http://localhost:8080/v1/api/reviews/search/${bookId}`;
+        const reviewUrl: string = `http://localhost:9091/v1/api/reviews/search/${bookId}`;
 
         const responseReviews = await fetch(reviewUrl);
 

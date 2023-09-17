@@ -1,69 +1,86 @@
 import React, { useState } from "react";
-import {
-  Checkbox,
-  Grid,
-  TextField,
-  FormControlLabel,
-  Paper,
-  Button,
-} from "@mui/material";
+import { useKeycloak } from "@react-keycloak/web";
 
-const LoginPage = () => {
-  const [token, setToken] = useState("");
+import { Grid, TextField, Button } from "@mui/material";
 
-  const username = "";
-  const password = "";
-  const client_id = "library_app";
-  const grant_type = "password";
-  const client_secret = "";
+const Login = (e) => {
+  // const [token, setToken] = useState("");
 
-  const handleLogin = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const { keycloak } = useKeycloak();
+
+  // const client_id = "library_app";
+  // const grant_type = "password";
+  // const client_secret = "5WV50lrr74XTM0vnsiCb2opEVh77RvCe";
+
+  const handleUsername = (e) => {
+    setUsername(e.target.value);
+  };
+
+  const handlePassword = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const handleLogin = async (e) => {
     console.log("logged");
-    setToken("token");
 
-    const fetchBook = async () => {
-      //       0            1       2
-      const baseUrl = `http://localhost:9080/auth/realms/library/protocol/openid-connect/token`;
+    console.log(username);
 
-      const response = await fetch(baseUrl, {
-        method: "POST",
-        headers: {
-          Accept: "*/*",
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: `grant_type=password&client_id=${client_id}&username=${encodeURIComponent(
-          username
-        )}&password=${encodeURIComponent(
-          password
-        )}&client_secret=${client_secret}`,
+    console.log(password);
+
+    try {
+      await keycloak.login({
+        username,
+        password,
       });
+    } catch (error) {
+      console.error("Failed to log in", error);
+    }
 
-      if (!response.ok) {
-        throw new Error("Something went wrong!");
-      }
+    // const fetchBook = async () => {
+    //   //       0            1       2
+    //   const baseUrl = `http://localhost:9080/auth/realms/library/protocol/openid-connect/token`;
 
-      const responseJson = await response.json();
+    //   const response = await fetch(baseUrl, {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "*/*",
+    //       "Content-Type": "application/x-www-form-urlencoded",
+    //     },
+    //     body: `grant_type=password&client_id=${client_id}&username=${encodeURIComponent(
+    //       username
+    //     )}&password=${encodeURIComponent(
+    //       password
+    //     )}&client_secret=${client_secret}`,
+    //   });
+    //   if (!response.ok) {
+    //     throw new Error("Something went wrong!");
+    //   }
 
-      console.log(responseJson);
+    //   const responseJson = await response.json();
 
-      // const loadedBook = {
-      //   id: responseJson.id,
-      //   title: responseJson.title,
-      //   author: responseJson.author,
-      //   description: responseJson.description,
-      //   copies: responseJson.copies,
-      //   copiesAvailable: responseJson.copiesAvailable,
-      //   category: responseJson.category,
-      //   img: responseJson.img,
-      // };
-      // setBook(loadedBook);
-      // setIsLoading(false);
-    };
+    //   console.log(responseJson);
 
-    fetchBook().catch((error) => {
-      //     setIsLoading(false);
-      //     setHttpError(error.message);
-    });
+    //   // const loadedBook = {
+    //   //   id: responseJson.id,
+    //   //   title: responseJson.title,
+    //   //   author: responseJson.author,
+    //   //   description: responseJson.description,
+    //   //   copies: responseJson.copies,
+    //   //   copiesAvailable: responseJson.copiesAvailable,
+    //   //   category: responseJson.category,
+    //   //   img: responseJson.img,
+    //   // };
+    //   // setBook(loadedBook);
+    //   // setIsLoading(false);
+    // };
+
+    // fetchBook().catch((error) => {
+    //     setIsLoading(false);
+    //     setHttpError(error.message);
+    // });
   };
 
   return (
@@ -76,13 +93,17 @@ const LoginPage = () => {
         alignItems={"center"}
       >
         <Grid item xs={12}>
-          <TextField label="Username"></TextField>
+          <TextField label="Username" onChange={handleUsername}></TextField>
         </Grid>
         <Grid item xs={12}>
-          <TextField label="Password" type={"password"}></TextField>
+          <TextField
+            label="Password"
+            type="password"
+            onChange={handlePassword}
+          ></TextField>
         </Grid>
         <Grid item xs={12}>
-          <Button fullWidth onClick={handleLogin}>
+          <Button fullWidth onClick={(e) => handleLogin(e)}>
             {" "}
             Login{" "}
           </Button>
@@ -92,4 +113,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Login;

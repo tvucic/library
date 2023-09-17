@@ -81,6 +81,5 @@ public class ReviewServiceImpl implements ReviewService
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(reviewsByBookId, new TypeToken<List<ReviewResponse>>(){}.getType());
 
-
     }
 }
